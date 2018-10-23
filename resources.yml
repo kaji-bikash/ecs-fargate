@@ -13,8 +13,10 @@ Resources:
     Properties:
       Description: Group of subnets to place Redis into
       SubnetIds:
-        - !ImportValue SubnetAZ1Public
-        - !ImportValue SubnetAZ2Public
+        - Fn::ImportValue:
+            !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetOne']]
+        - Fn::ImportValue:
+            !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetTwo']]
 
   # Security group to add the Redis cluster to the VPC,
   # and to allow the Fargate containers to talk to Redis on port 6379
@@ -22,7 +24,9 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: "Redis Security Group"
-      VpcId: !ImportValue VPC
+      VpcId:
+        Fn::ImportValue:
+          !Join [':', [!Ref 'EnvironmentName', 'VPCId']]
   RedisIngress:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
