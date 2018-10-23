@@ -10,90 +10,90 @@ Parameters:
     Type: String
     Description: ARN of the Amazon Certificate Manager SSL certificate to use for this app
 
-Mappings:
-  # Hard values for the subnet masks. These masks define
-  # the range of internal IP addresses that can be assigned.
-  # The VPC can have all IP's from 10.0.0.0 to 10.0.255.255
-  # There are two subnets which cover the ranges:
-  #
-  # 10.0.0.0 - 10.0.0.255
-  # 10.0.1.0 - 10.0.1.255
-  #
-  # If you need more IP addresses (perhaps you have so many
-  # instances that you run out) then you can customize these
-  # ranges to add more
-  SubnetConfig:
-    VPC:
-      CIDR: '10.0.0.0/16'
-    PublicOne:
-      CIDR: '10.0.0.0/24'
-    PublicTwo:
-      CIDR: '10.0.1.0/24'
+# Mappings:
+#   # Hard values for the subnet masks. These masks define
+#   # the range of internal IP addresses that can be assigned.
+#   # The VPC can have all IP's from 10.0.0.0 to 10.0.255.255
+#   # There are two subnets which cover the ranges:
+#   #
+#   # 10.0.0.0 - 10.0.0.255
+#   # 10.0.1.0 - 10.0.1.255
+#   #
+#   # If you need more IP addresses (perhaps you have so many
+#   # instances that you run out) then you can customize these
+#   # ranges to add more
+#   SubnetConfig:
+#     VPC:
+#       CIDR: '10.0.0.0/16'
+#     PublicOne:
+#       CIDR: '10.0.0.0/24'
+#     PublicTwo:
+#       CIDR: '10.0.1.0/24'
 Resources:
   # VPC in which containers will be networked.
   # It has two public subnets
   # We distribute the subnets across the first two available subnets
   # for the region, for high availability.
-  VPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-      CidrBlock: !FindInMap ['SubnetConfig', 'VPC', 'CIDR']
+  # VPC:
+  #   Type: AWS::EC2::VPC
+  #   Properties:
+  #     EnableDnsSupport: true
+  #     EnableDnsHostnames: true
+  #     CidrBlock: !FindInMap ['SubnetConfig', 'VPC', 'CIDR']
 
-  # Two public subnets, where containers can have public IP addresses
-  PublicSubnetOne:
-    Type: AWS::EC2::Subnet
-    Properties:
-      AvailabilityZone:
-         Fn::Select:
-         - 0
-         - Fn::GetAZs: {Ref: 'AWS::Region'}
-      VpcId: !Ref 'VPC'
-      CidrBlock: !FindInMap ['SubnetConfig', 'PublicOne', 'CIDR']
-      MapPublicIpOnLaunch: true
-  PublicSubnetTwo:
-    Type: AWS::EC2::Subnet
-    Properties:
-      AvailabilityZone:
-         Fn::Select:
-         - 1
-         - Fn::GetAZs: {Ref: 'AWS::Region'}
-      VpcId: !Ref 'VPC'
-      CidrBlock: !FindInMap ['SubnetConfig', 'PublicTwo', 'CIDR']
-      MapPublicIpOnLaunch: true
+  # # Two public subnets, where containers can have public IP addresses
+  # PublicSubnetOne:
+  #   Type: AWS::EC2::Subnet
+  #   Properties:
+  #     AvailabilityZone:
+  #        Fn::Select:
+  #        - 0
+  #        - Fn::GetAZs: {Ref: 'AWS::Region'}
+  #     VpcId: !Ref 'VPC'
+  #     CidrBlock: !FindInMap ['SubnetConfig', 'PublicOne', 'CIDR']
+  #     MapPublicIpOnLaunch: true
+  # PublicSubnetTwo:
+  #   Type: AWS::EC2::Subnet
+  #   Properties:
+  #     AvailabilityZone:
+  #        Fn::Select:
+  #        - 1
+  #        - Fn::GetAZs: {Ref: 'AWS::Region'}
+  #     VpcId: !Ref 'VPC'
+  #     CidrBlock: !FindInMap ['SubnetConfig', 'PublicTwo', 'CIDR']
+  #     MapPublicIpOnLaunch: true
 
   # Setup networking resources for the public subnets. Containers
   # in the public subnets have public IP addresses and the routing table
   # sends network traffic via the internet gateway.
-  InternetGateway:
-    Type: AWS::EC2::InternetGateway
-  GatewayAttachement:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      VpcId: !Ref 'VPC'
-      InternetGatewayId: !Ref 'InternetGateway'
-  PublicRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref 'VPC'
-  PublicRoute:
-    Type: AWS::EC2::Route
-    DependsOn: GatewayAttachement
-    Properties:
-      RouteTableId: !Ref 'PublicRouteTable'
-      DestinationCidrBlock: '0.0.0.0/0'
-      GatewayId: !Ref 'InternetGateway'
-  PublicSubnetOneRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnetOne
-      RouteTableId: !Ref PublicRouteTable
-  PublicSubnetTwoRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnetTwo
-      RouteTableId: !Ref PublicRouteTable
+  # InternetGateway:
+  #   Type: AWS::EC2::InternetGateway
+  # GatewayAttachement:
+  #   Type: AWS::EC2::VPCGatewayAttachment
+  #   Properties:
+  #     VpcId: !Ref 'VPC'
+  #     InternetGatewayId: !Ref 'InternetGateway'
+  # PublicRouteTable:
+  #   Type: AWS::EC2::RouteTable
+  #   Properties:
+  #     VpcId: !Ref 'VPC'
+  # PublicRoute:
+  #   Type: AWS::EC2::Route
+  #   DependsOn: GatewayAttachement
+  #   Properties:
+  #     RouteTableId: !Ref 'PublicRouteTable'
+  #     DestinationCidrBlock: '0.0.0.0/0'
+  #     GatewayId: !Ref 'InternetGateway'
+  # PublicSubnetOneRouteTableAssociation:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   Properties:
+  #     SubnetId: !Ref PublicSubnetOne
+  #     RouteTableId: !Ref PublicRouteTable
+  # PublicSubnetTwoRouteTableAssociation:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   Properties:
+  #     SubnetId: !Ref PublicSubnetTwo
+  #     RouteTableId: !Ref PublicRouteTable
 
   # ECS Resources
   ECSCluster:
@@ -111,20 +111,20 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Access to the Fargate containers
-      VpcId: !Ref 'VPC'
+      VpcId: !ImportValue 'VPC'
   EcsSecurityGroupIngressFromPublicALB:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       Description: Ingress from the public ALB
       GroupId: !Ref 'FargateContainerSecurityGroup'
-      IpProtocol: -1
+      IpProtocol: '-1'
       SourceSecurityGroupId: !Ref 'PublicLoadBalancerSG'
   EcsSecurityGroupIngressFromSelf:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       Description: Ingress from other containers in the same security group
       GroupId: !Ref 'FargateContainerSecurityGroup'
-      IpProtocol: -1
+      IpProtocol: '-1'
       SourceSecurityGroupId: !Ref 'FargateContainerSecurityGroup'
 
   # Load balancers for getting traffic to containers.
@@ -140,7 +140,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Access to the public facing load balancer
-      VpcId: !Ref 'VPC'
+      VpcId: !ImportValue 'VPC'
       SecurityGroupIngress:
           # Allow access to ALB from anywhere on the internet
           - CidrIp: 0.0.0.0/0
@@ -155,8 +155,8 @@ Resources:
       Subnets:
         # The load balancer is placed into the public subnets, so that traffic
         # from the internet can reach the load balancer directly via the internet gateway
-        - !Ref PublicSubnetOne
-        - !Ref PublicSubnetTwo
+        - !ImportValue SubnetAZ1Public
+        - !ImportValue SubnetAZ2Public
       SecurityGroups: [!Ref 'PublicLoadBalancerSG']
   # A dummy target group is used to setup the ALB to just drop traffic
   # initially, before any real service target groups have been added.
@@ -172,7 +172,7 @@ Resources:
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
-      VpcId: !Ref 'VPC'
+      VpcId: !ImportValue 'VPC'
   PublicLoadBalancerListenerHTTP:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn:
