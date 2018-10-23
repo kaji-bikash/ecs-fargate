@@ -122,10 +122,6 @@ Resources:
           Subnets:
             - !ImportValue SubnetAZ1Public
             - !ImportValue SubnetAZ2Public
-            # - Fn::ImportValue:
-            #     !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetOne']]
-            # - Fn::ImportValue:
-            #     !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetTwo']]
       TaskDefinition: !Ref 'TaskDefinition'
       LoadBalancers:
         - ContainerName: !Ref 'ServiceName'
