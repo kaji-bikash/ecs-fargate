@@ -120,10 +120,12 @@ Resources:
             - Fn::ImportValue:
                 !Join [':', [!Ref 'EnvironmentName', 'FargateContainerSecurityGroup']]
           Subnets:
-            - Fn::ImportValue:
-                !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetOne']]
-            - Fn::ImportValue:
-                !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetTwo']]
+            - !ImportValue SubnetAZ1Public
+            - !ImportValue SubnetAZ2Public
+            # - Fn::ImportValue:
+            #     !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetOne']]
+            # - Fn::ImportValue:
+            #     !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetTwo']]
       TaskDefinition: !Ref 'TaskDefinition'
       LoadBalancers:
         - ContainerName: !Ref 'ServiceName'
@@ -155,9 +157,7 @@ Resources:
           Value: true
         - Key: deregistration_delay.timeout_seconds
           Value: 30
-      VpcId:
-        Fn::ImportValue:
-          !Join [':', [!Ref 'EnvironmentName', 'VPCId']]
+      VpcId: !ImportValue VPC
 
   # Create rules to forward both HTTP and HTTPS traffic to the service's
   # target group. The service itself will handle redirecting HTTP traffic
