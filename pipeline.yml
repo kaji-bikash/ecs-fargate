@@ -302,6 +302,31 @@ Resources:
               InputArtifacts:
                 - Name: Source
                 - Name: BuildOutput
+              RunOrder: 1
+
+            - Name: DeployNginx
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CloudFormation
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                RoleArn: !GetAtt CloudFormationDeployRole.Arn
+                StackName: !Sub ${EnvironmentName}-NginxService
+                TemplatePath: Source::chat-service2.yml
+                Capabilities: CAPABILITY_IAM
+                ParameterOverrides: !Sub |
+                  {
+                    "EnvironmentName": "${EnvironmentName}",
+                    "ImageUrl": {
+                      "Fn::GetParam" : ["BuildOutput", "build.json", "ImageUri"]
+                    }
+                  }
+              InputArtifacts:
+                - Name: Source
+                - Name: BuildOutput
+              RunOrder: 2
 
 Outputs:
   PipelineUrl:
