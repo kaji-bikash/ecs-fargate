@@ -72,7 +72,7 @@ Resources:
         - Name: !Ref 'ServiceName'
           Cpu: !Ref 'ContainerCpu'
           Memory: !Ref 'ContainerMemory'
-          Image: !Ref 'ImageUrl'
+          Image: nginx
           Environment:
             - Name: REGION
               Value: !Ref 'AWS::Region'
