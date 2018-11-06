@@ -326,7 +326,7 @@ Resources:
               InputArtifacts:
                 - Name: Source
                 - Name: BuildOutput
-              RunOrder: 2
+              RunOrder: 1
 
 Outputs:
   PipelineUrl:
