@@ -120,8 +120,8 @@ Resources:
             - Fn::ImportValue:
                 !Join [':', [!Ref 'EnvironmentName', 'FargateContainerSecurityGroup']]
           Subnets:
-            - !ImportValue SubnetAZ1Public
-            - !ImportValue SubnetAZ2Public
+            - !ImportValue SubnetAZ1Private
+            - !ImportValue SubnetAZ2Private
       TaskDefinition: !Ref 'TaskDefinition'
       LoadBalancers:
         - ContainerName: !Ref 'ServiceName'
