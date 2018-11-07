@@ -12,7 +12,7 @@ Parameters:
     Description: A name for the service
   ImageUrl:
     Type: String
-    Default: nginx
+    Default: kajisaap/nginxtest:slashnginx
     Description: The url of a docker image that contains the application process that
                  will handle the traffic for this service
   ContainerPort:
@@ -72,7 +72,7 @@ Resources:
         - Name: !Ref 'ServiceName'
           Cpu: !Ref 'ContainerCpu'
           Memory: !Ref 'ContainerMemory'
-          Image: nginx
+          Image: 'kajisaap/nginxtest:slashnginx'
           Environment:
             - Name: REGION
               Value: !Ref 'AWS::Region'
