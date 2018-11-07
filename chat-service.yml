@@ -115,7 +115,7 @@ Resources:
       DesiredCount: !Ref 'DesiredCount'
       NetworkConfiguration:
         AwsvpcConfiguration:
-          AssignPublicIp: ENABLED
+          AssignPublicIp: DISABLED #Since our services are going to be in private subnets
           SecurityGroups:
             - Fn::ImportValue:
                 !Join [':', [!Ref 'EnvironmentName', 'FargateContainerSecurityGroup']]
